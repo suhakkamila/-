@@ -1,0 +1,93 @@
+﻿<Window x:Class="QueensSolverRBFS.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Розв'язання задачі 8 ферзів" Height="700" Width="1000">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Панель управління -->
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="10">
+            <ComboBox x:Name="algorithmSelector" Width="120" Margin="5,0" 
+                      SelectedIndex="0" SelectionChanged="AlgorithmSelector_SelectionChanged">
+                <ComboBoxItem Content="RBFS"/>
+                <ComboBoxItem Content="A*"/>
+            </ComboBox>
+
+            <Button x:Name="solveButton" Content="Розв'язати" Margin="5,0" 
+                    Padding="10,5" Click="SolveButton_Click"
+                    IsEnabled="{Binding IsNotRunning}"/>
+
+            <Button x:Name="resetButton" Content="Скинути" Margin="5,0" 
+                    Padding="10,5" Click="ResetButton_Click"
+                     IsEnabled="{Binding IsNotRunning}"/>
+
+            <Button x:Name="randomButton" Content="Випадкова розстановка" Margin="5,0" 
+                    Padding="10,5" Click="RandomButton_Click"
+                    IsEnabled="{Binding IsNotRunning}"/>
+
+            <Button x:Name="saveButton" Content="Зберегти результат" Margin="5,0" 
+                    Padding="10,5" Click="SaveButton_Click"
+                    IsEnabled="{Binding HasSolution}"/>
+
+            <Button x:Name="pauseButton" Content="Пауза" Margin="5,0" 
+                    Padding="10,5" Click="PauseButton_Click"
+                    IsEnabled="{Binding IsRunning}"/>
+
+            <Label Content="Швидкість:" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <Slider x:Name="speedSlider" Width="100" Minimum="100" Maximum="2000"
+                    Value="800" VerticalAlignment="Center"
+                    ValueChanged="SpeedSlider_ValueChanged"/>
+
+            <TextBlock x:Name="statusText" VerticalAlignment="Center" Margin="20,0"
+                       Text="Розставте початкових ферзів і натисніть 'Розв'язати'."/>
+        </StackPanel>
+
+        <!-- Шахова дошка -->
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="Black" BorderThickness="1" Margin="10">
+            <Canvas x:Name="chessboardCanvas" SizeChanged="ChessboardCanvas_SizeChanged" Background="LightGray"/>
+        </Border>
+
+        <!-- Панель відладочної інформації -->
+        <Grid Grid.Row="1" Grid.Column="1" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="Журнал відлагодження алгоритму:" FontWeight="Bold"/>
+
+            <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Margin="0,5,0,0">
+                <ScrollViewer>
+                    <TextBox x:Name="logTextBox" Text="{Binding DebugLogText, Mode=OneWay}" 
+                              IsReadOnly="True" TextWrapping="Wrap" FontFamily="Consolas"
+                              VerticalScrollBarVisibility="Auto"/>
+                </ScrollViewer>
+            </Border>
+
+            <!-- Статистика алгоритмів -->
+            <Border Grid.Row="2" BorderBrush="Gray" BorderThickness="1" Margin="0,5,0,0">
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <TextBlock Text="Статистика роботи алгоритму:" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <TextBlock x:Name="statsText" Text="" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Статусний рядок -->
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="2">
+            <StatusBarItem>
+                <TextBlock Text="Для розміщення ферзя клацніть по клітині шахової дошки. Для початку розв'язання алгоритмом достатньо 1-2 ферзя."/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>
